@@ -1,0 +1,21 @@
+{
+  "name": "qest",
+  "version": "1.0.0",
+  "description": "",
+  "source": "src/index.ts",
+  "main": "dist/index.js",
+  "module": "dist/module.js",
+  "types": "dist/types.d.ts",
+  "scripts": {
+    "test": "ts-node -r ./src/testSuite.ts ./src/jest.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^20.12.8",
+    "glob": "^10.3.12",
+    "parcel": "^2.12.0",
+    "typescript": "^5.4.5"
+  }
+}
