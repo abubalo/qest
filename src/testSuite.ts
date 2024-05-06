@@ -1,4 +1,5 @@
-//testSuite.ts
+import { ConsoleReporter, Reporter } from "./Reporter";
+
 export const describe = (name: string, testFunction: () => void): void => {
   console.log(`\n${name}`);
   try {
@@ -11,7 +12,7 @@ export const describe = (name: string, testFunction: () => void): void => {
 interface Hooks {
   beforeEach: (() => void)[];
   afterEach: (() => void)[];
-};
+}
 
 const hooks: Hooks = {
   beforeEach: [],
@@ -28,20 +29,22 @@ export const afterEach = (hook: () => void): void => {
 // Test runner
 export const test = <T>(
   description: string,
-  testFunction: () => T | Promise<T>
+  testFunction: () => T | Promise<T>,
+  reporter: Reporter = new ConsoleReporter()
 ): void => {
   const runTest = async () => {
     try {
-      // Execute beforeEach hooks
       for (const hook of hooks.beforeEach) {
         hook();
       }
-      // Execute the test function
+
+      reporter.testStart(description);
       const result = await Promise.resolve(testFunction());
-      console.log(`✅ - ${description}`);
+      reporter.testPass(description);
+
       return result;
     } catch (error) {
-      console.log(`❌ - ${description}: ${error}`);
+      reporter.testFail(description, error);
     } finally {
       // Execute afterEach hooks
       for (const hook of hooks.afterEach) {
@@ -50,14 +53,12 @@ export const test = <T>(
     }
   };
 
-
   if (testFunction instanceof Promise) {
     runTest();
   } else {
     runTest().then(() => {});
   }
 };
-
 
 export const expect = <T>(actual: T) => ({
   // Assertion functions
@@ -91,4 +92,3 @@ export const expect = <T>(actual: T) => ({
     }
   },
 });
-
